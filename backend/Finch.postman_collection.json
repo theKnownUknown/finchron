@@ -1,0 +1,282 @@
+{
+	"info": {
+		"_postman_id": "9ddeb4d6-89e5-4aff-969d-1b356d529c12",
+		"name": "Finch",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2147104"
+	},
+	"item": [
+		{
+			"name": "/task",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"slug\": \"task-some-new-task\",\n    \"dependencies\": [\n        {\"dependsOn\": \"task-intake-call\"}\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{finch_host}}/task",
+					"host": [
+						"{{finch_host}}"
+					],
+					"path": [
+						"task"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "/task - no dependencies",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"task-some-new-task\",\n    \"dependencies\": []\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{finch_host}}/task",
+							"host": [
+								"{{finch_host}}"
+							],
+							"path": [
+								"task"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "/task - with dependencies",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"task-some-other-task-with-deps\",\n    \"dependencies\": [\n        {\n            \"dependsOn\": \"task-some-new-task\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{finch_host}}/task",
+							"host": [
+								"{{finch_host}}"
+							],
+							"path": [
+								"task"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "/tasks",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{finch_host}}/tasks",
+					"host": [
+						"{{finch_host}}"
+					],
+					"path": [
+						"tasks"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/tasks/:slug",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{finch_host}}/tasks/:slug",
+					"host": [
+						"{{finch_host}}"
+					],
+					"path": [
+						"tasks",
+						":slug"
+					],
+					"variable": [
+						{
+							"key": "slug",
+							"value": "task-some-new-task"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/tasks/:slug/dependency",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"dependsOn\": \"task-create-demand\",\n    \"secondsElapsedSince\": 15\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{finch_host}}/tasks/:slug/dependency",
+					"host": [
+						"{{finch_host}}"
+					],
+					"path": [
+						"tasks",
+						":slug",
+						"dependency"
+					],
+					"variable": [
+						{
+							"key": "slug",
+							"value": "task-some-new-task"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/matter",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"ACME Legal #22\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{finch_host}}/matter",
+					"host": [
+						"{{finch_host}}"
+					],
+					"path": [
+						"matter"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "matters",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{finch_host}}/matters",
+					"host": [
+						"{{finch_host}}"
+					],
+					"path": [
+						"matters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "matters/:matterId",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{finch_host}}/matters/:matterId",
+					"host": [
+						"{{finch_host}}"
+					],
+					"path": [
+						"matters",
+						":matterId"
+					],
+					"variable": [
+						{
+							"key": "matterId",
+							"value": "mtr-bfc75516-2f39ae53"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "matters/:matterId/run/:taskSlug",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{finch_host}}/matters/:matterId/run/:taskSlug",
+					"host": [
+						"{{finch_host}}"
+					],
+					"path": [
+						"matters",
+						":matterId",
+						"run",
+						":taskSlug"
+					],
+					"variable": [
+						{
+							"key": "matterId",
+							"value": "mtr-89b85fd9-9865b68c"
+						},
+						{
+							"key": "taskSlug",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
