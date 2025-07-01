@@ -69,8 +69,14 @@ $ cd cli
 
 --------------------
 ? What would you like to do? › - Use arrow-keys. Return to submit.
-❯   View all tasks
-    Create a new task
+❯   Create a new task
+    View all tasks
+    View a specific task
+    Update/Add a dependency for a task
+    Create a new matter
+    View all matters
+    View audit trail for a matter
+    Run a task on a matter
     Quit
 ```
 
@@ -127,6 +133,37 @@ All the core logic around creating matters and tasks, managing dependencies and 
 
 ## CLI
 
-This tool is built in Typescript using `promptsJs`
+This tool is built in Typescript using `promptsJs` as the interface driver for the CLI
 
-[TBD]
+### Organization
+- The main entrypoint is `./cli/src/index.ts` --> this renders the first screen
+- All the other screens (that branch out from the main screen) are stored in `./cli/src/screens`
+- Just like any UI, the screens use `components` to render individual pieces of info
+    - these are managed in `./cli/src/components/index.ts`
+    - the current crop of components basically render tables of data or errors
+- The CLI uses REST to access the backend. All the client side requests are stored in `./cli/src/requests`
+
+### Event loop
+Since this is a cli, we've simulated an event loop in `./cli/src/index.ts` using a `do{...}while(true);`. Kinda basic, but gets the job done
+
+### Running the tool
+```sh
+$ cd cli
+[cli]$ npm install
+[cli]$ npm run dev
+
+-----
+? What would you like to do? › - Use arrow-keys. Return to submit.
+❯   Create a new task
+    View all tasks
+    View a specific task
+    Update/Add a dependency for a task
+    Create a new matter
+    View all matters
+    View audit trail for a matter
+    Run a task on a matter
+    Quit
+```
+
+The tool begins with a list of all available task on the main screen. You can use arrow keys to navigate. It will prompt you from time to time to gather inputs
+
