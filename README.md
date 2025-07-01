@@ -1,4 +1,6 @@
 # Getting Started
+## Watch the loom
+[![loom video here]](https://www.loom.com/share/643df2f670824c96a20b0dbd4aabf0cb?sid=643aea4a-a73e-4110-8b85-fca6d0474f63)
 
 ## Pre-requisites
 Install node v22.13.0 or higher
