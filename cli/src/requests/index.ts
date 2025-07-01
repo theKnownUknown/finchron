@@ -9,6 +9,14 @@ dotenv.config();
 const baseUrl = process.env["BASE_URL"];
 if(!baseUrl) throw new Error("BASE_URL must be defined in .env");
 
+// create an axios client
+export const axiosClient = axios.create({
+    baseURL: baseUrl,
+    headers: {
+        'Content-Type': 'application/json'
+    }
+});
+
 // common error handler
 const handleError = (error: any) => {
     if (axios.isAxiosError(error)) {
@@ -21,17 +29,28 @@ const handleError = (error: any) => {
     return undefined;
 }
 
+// GET /tasks
 export async function getTasks() {
     try{
-        return (await axios.get<Task[]>(`${baseUrl}/tasks`)).data;
+        return (await axiosClient.get<Task[]>(`/tasks`)).data;
     } catch(error: unknown){
         return handleError(error);
     }
 }
 
+// GET /tasks/:slug
+export async function getTask(slug: string){
+    try{
+        return (await axiosClient.get<Task>(`/tasks/${slug}`)).data;
+    } catch(error: unknown){
+        return handleError(error);
+    }
+}
+
+// POST /task
 export async function createTask(task: Task) {
     try{
-        return (await axios.post(`${baseUrl}/task`, task)).data;
+        return (await axiosClient.post(`/task`, task)).data;
     } catch(error: unknown){
         return handleError(error);
     }

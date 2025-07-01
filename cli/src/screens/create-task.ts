@@ -56,8 +56,5 @@ export const createTaskScreen__route = async () => {
         dependencies
     })
 
-    if(createdTask) {
-        console.log("task created");
-        renderTableOfTasks(await getTasks());
-    }
+    if(createdTask) renderTableOfTasks(await getTasks());
 }
