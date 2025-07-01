@@ -2,25 +2,16 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Run App (Typescript)",
       "type": "node",
       "request": "launch",
-      "program": "${workspaceFolder}/backend/src/index.ts",
-      "runtimeArgs": [
-        "-r", "ts-node/register"
-      ],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "skipFiles": ["<node_internals>/**"],
-      "sourceMaps": true,
-      "outFiles": ["${workspaceFolder}/backend/dist/**/*.js"],
+      "name": "Debug TypeScript (Backend)",
+      "runtimeArgs": ["-r", "ts-node/register"],
+      "args": ["src/index.ts"],
+      "cwd": "${workspaceFolder}/backend",
       "env": {
-        "TS_NODE_PROJECT": "${workspaceFolder}/backend/tsconfig.json"
+        "TS_NODE_PROJECT": "tsconfig.json"
       },
-      "resolveSourceMapLocations": [
-        "${workspaceFolder}/backend/**",
-        "!**/node_modules/**"
-      ]
+      "skipFiles": ["<node_internals>/**"]
     }
   ]
-} 
+}

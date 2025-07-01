@@ -88,6 +88,68 @@ export class Orchestrator {
     }
 
     /**
+     * Guard against creating circular dependencies being created. Will recursively
+     * walk through the intended dependency chain, and find circular dependencies
+     * and throw an error
+     * @param task Task being updated with new dependency
+     * @param newDep the new dependency being added
+     * @param index if provided, updates existing dep else add a new dep
+     */
+    guardAgainstCircularDeps(origTask: Task, newDep: Dependency, index?: number){
+        
+        if(index) origTask.dependencies[index] = newDep;
+        else origTask.dependencies.push(newDep);
+        
+        // now let's check if there are circular dependencies being created in
+        // this experimental object. We can do this by creating a dependency
+        // chain and if any of the dependencies occurs more than once, there's a problem
+        let slugChain: string[] = [];
+
+        // defining a walk function that can recursively traverse the dependency chain
+        // given any task slug
+        const walk = (tSlug: string) => {
+            // error condition
+            if(slugChain.includes(tSlug)) {
+                // the slug we started with is found once again... found a circular dep, throw
+                throw new Error(`Circular dependency might occur! circular chain: ${slugChain.join("-> ")} ---[new]--> ${tSlug}`);
+            }
+            
+            // save this task slug in the chain
+            slugChain.push(tSlug);
+            
+
+            // get this tasks dependencies, and walk those
+            const t = this.getTaskBySlug(tSlug);
+            if(t.dependencies.length === 0) {
+                // reached end of the line, show the current chain
+                // and reset it. This chain doesn't have circularity
+                slugChain = [origTask.slug];
+                return;
+            }
+
+            for(const dep of t.dependencies){
+                const {dependsOn: nextTaskSlug} = dep;
+                walk(nextTaskSlug);
+            }
+        }
+
+        try{
+            // start traversing the original task
+            walk(origTask.slug);
+        } catch(error: unknown){
+            if(error instanceof Error){
+                // clearly we found that introducing this new dependency
+                // creates a circular dependency, let's uncommit this dependency
+                origTask.dependencies = origTask.dependencies.filter(d => d.dependsOn !== newDep.dependsOn);
+                
+                // now that we've safely undone that change
+                // let's raise an error
+                throw error;
+            }
+        }
+    }
+
+    /**
      * update a dependency for a given task
      * @param slug slug of the task
      * @param newDep the dependency object being updated/created
@@ -108,6 +170,7 @@ export class Orchestrator {
             if(currDep?.dependsOn === newDep.dependsOn){
                 // yes, update this dep here!
                 depExists = true;
+                this.guardAgainstCircularDeps(task, newDep);
                 task.dependencies[i] = newDep;
                 break;
             }
@@ -116,6 +179,7 @@ export class Orchestrator {
         // this is a brand new dependency, needs to be 
         // added since it isn't already there
         if(!depExists){
+            this.guardAgainstCircularDeps(task, newDep);
             task.dependencies.push(newDep);
         }
 

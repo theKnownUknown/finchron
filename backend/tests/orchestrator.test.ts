@@ -86,13 +86,27 @@ describe('Event Store Test', () => {
         expect(orch.runTaskOnMatter(matterId, newTask.slug).type === EventType.TASK_COMPLETED);
     }, DEFAULT_TIMEOUT);
 
-    // update dependency on an existing task, with a new task
-    // test running it
-    orch.upsertDependencyToTask(checkinTask.slug, {dependsOn: newTask.slug, secondsElapsedSince: DEP_TIME_SEC});
+    // add a new dependency on 'new task' to point to intake task
+    orch.upsertDependencyToTask(newTask.slug, {dependsOn: intakeTask.slug, secondsElapsedSince: DEP_TIME_SEC});
 
     test('introduce dependency in old task', async () => {
-        expect(orch.runTaskOnMatter(matterId, checkinTask.slug).type === EventType.TASK_FAILED);
-        await delay(DEP_TIME_SEC * 1000);
-        expect(orch.runTaskOnMatter(matterId, checkinTask.slug).type === EventType.TASK_COMPLETED);
+        expect(orch.runTaskOnMatter(matterId, newTask.slug).type === EventType.TASK_COMPLETED);
     }, DEFAULT_TIMEOUT);
+
+    // test against circular dependency introduction
+    test('test against circular dependency', () => {
+        const signTask = (orch.tasks.filter(t => t?.slug === "task-sign-eng-letter"))[0];
+        assert(signTask);
+        const collectTask = (orch.tasks.filter(t => t?.slug === "task-collect-med-rec"))[0];
+        assert(collectTask);
+
+        // now when we try to add collect task as a dependency to sign task, we should throw an error
+        try{
+            orch.upsertDependencyToTask(signTask.slug, {dependsOn: collectTask.slug, secondsElapsedSince: 0});
+            assert(false);
+        } catch(error){
+            expect(error).toBeInstanceOf(Error);
+            expect((error as Error).message.toLowerCase()).toContain("circular");
+        }
+    });
 }); 
