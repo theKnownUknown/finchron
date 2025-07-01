@@ -1,7 +1,8 @@
 import prompts, { PromptObject } from 'prompts';
 import { getTasks } from '../requests';
 import { createTaskScreen__route } from './create-task';
-import { renderTableOfTasks } from './components';
+import { renderTableOfTasks } from '../components';
+import { promptConfig } from '../common';
 
 const mainScreen: PromptObject = {
     type: 'select',
@@ -15,7 +16,8 @@ const mainScreen: PromptObject = {
 };
 
 export const mainScreen__route = async () => {
-    const response = await prompts(mainScreen);
+    const response = await prompts(mainScreen, promptConfig);
+    
     switch(response["mainScreen__action"]){
         case "get_tasks": 
             renderTableOfTasks(await getTasks());

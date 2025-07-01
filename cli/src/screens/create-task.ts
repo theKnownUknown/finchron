@@ -1,6 +1,8 @@
 import prompts, { PromptObject } from 'prompts';
-import { getTasks, createTask, Task} from '../requests';
-import { renderError, renderTableOfTasks } from './components';
+import { getTasks, createTask} from '../requests';
+import { Task } from '../common';
+import { renderError, renderTableOfTasks } from '../components';
+import { promptConfig } from '../common';
 
 
 const createTaskScreen: PromptObject[] = [
@@ -29,7 +31,7 @@ export const createTaskScreen__route = async () => {
     const tasks = await getTasks();
 
     // read slug and validate it
-    const { slug } = await prompts(createTaskScreen[0] as PromptObject);
+    const { slug } = await prompts(createTaskScreen[0] as PromptObject, promptConfig);
     if(!slug || slug.trim().length === 0) {
         renderError("invalid slug");
         return;
@@ -42,7 +44,7 @@ export const createTaskScreen__route = async () => {
     }
 
     // handle the other prompts in this screen
-    const { dependsOn, secondsElapsedSince } = await prompts(createTaskScreen.slice(1));
+    const { dependsOn, secondsElapsedSince } = await prompts(createTaskScreen.slice(1), promptConfig);
     const dependencies = [];
     if (dependsOn && dependsOn.trim().length > 0){
         dependencies.push(secondsElapsedSince ? {dependsOn, secondsElapsedSince}: {dependsOn})
