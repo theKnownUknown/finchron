@@ -19,7 +19,7 @@ export type Event = {
     createdAt: Date,
     type: string,
     id: string,
-    meta: any,
+    meta: Record<string, string>,
     slug: string
 }
 

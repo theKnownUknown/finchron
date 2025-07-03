@@ -18,7 +18,7 @@ export const axiosClient = axios.create({
 });
 
 // common error handler
-const handleError = (error: any) => {
+const handleError = (error: unknown) => {
     if (axios.isAxiosError(error)) {
         const {message, cause, code, response} = error;
         renderError(`${message} (status code: ${code} | cause: ${cause})`);

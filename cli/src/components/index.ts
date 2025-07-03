@@ -51,6 +51,10 @@ export const renderTableOfMatters = (matters: Matter[] | undefined) => {
     )
 }
 
-export const renderError = (error: any) => {
-    console.error(`\n⚠️  -> Error:`, error?.message || error);
+export const renderError = (error: unknown) => {
+    if (error instanceof Error) {
+        console.error(`\n⚠️  -> Error:`, error?.message);
+    } else {
+        console.error(`\n⚠️  -> Error:`, error);
+    }
 }
